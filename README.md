@@ -2,6 +2,7 @@
 
 ### Andrea Duncan, Hannah Ginberg, Sai Reddy, Lester Yang
 -----------
+[CAD Link](https://drive.google.com/drive/folders/1qfF28mV88ejZdXAls0ICtU8utXBRbMv3?usp=sharing)
 
 Our team is competing for a contract to build, operate, and maintain a fleet of bridge inspection robots for use throughout Indiana. To win the contract, we must design, build, and demonstrate a prototype device for locating, marking, and temporarily patching bridge damage. We will have the opportunity to demonstrate our vehicle on a simulated bridge surface.
 
