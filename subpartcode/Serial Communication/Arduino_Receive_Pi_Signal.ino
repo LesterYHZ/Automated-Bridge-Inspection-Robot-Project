@@ -1,5 +1,5 @@
-byte incomingData;
-int signal;
+byte incomingData = '0';
+int signal = 0;
 
 void Serial_Intialization() {
     Serial.begin(9600);
@@ -14,36 +14,36 @@ void Receive_Signal(){
         switch(signal){
             case 0:
             // Motor Stop
-                motor(0);
+                Motor(0);
                 break;
             case 1:
             // Motor Forward
-                motor(1);
+                Motor(1);
                 break;
             case 2:
             // Motor Backward
-                motor(2);
+                Motor(2);
                 break;
             case 3:
             // Motor Right
-                motor(3);
+                Motor(3);
                 break;
             case 4: 
             // Motor Left
-                motor(4);
-                break;
-            case 5:
-                pusher(1);
-                break;
-            case 6:
-                pusher(0);
+                Motor(4);
                 break;
             /*
+            * case 5:
+            *     pusher(1);
+            *     break;
+            * case 6:
+            *     pusher(0);
+            *     break;
+            * 
             * case other_number:
             *   lcd("some_coord");
             *   break;
             */
-            
         }
     }
 }
