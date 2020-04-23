@@ -2,7 +2,7 @@ Folder 1: Basic code for all subparts
 
 
 Subparts:
-* Camera Vision
+* Vision System
     * Pan_tilt_tracking: main code for vision system (runs all processes)
       * PID: Servo motors PID Controls
       * objcenter: Uses blob tracker to detect washer and extract coordinates
