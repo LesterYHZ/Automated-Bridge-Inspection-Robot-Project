@@ -3,7 +3,7 @@
 #Function:
 #At the end of 75 seconds, your vehicle should cease operation.
 #The locations of bridge damage should be presented on the display in sequential form (one at a time),
-##with each location displayed for a duration of approximately 1 second.
+#with each location displayed for a duration of approximately 1 second.
 #This sequence should continue until the robot is turned off by a team member.
 
 #Inputs: Saved washer locations (i.e. locations of bridge damage)
