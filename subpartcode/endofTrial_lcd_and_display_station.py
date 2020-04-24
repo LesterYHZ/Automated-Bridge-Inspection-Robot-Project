@@ -1,5 +1,8 @@
 #End state: combining LCD display and display station (bluetooth)
 
+#manager
+
+
 #LCD
 #At the end of 75 seconds, your vehicle should cease operation.
 #The locations of bridge damage should be presented on the display in sequential form (one at a time),
