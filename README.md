@@ -1,4 +1,4 @@
-# 588-Robot-Project
+# Automated Bridge Inspection Robot Project
 
 ### Andrea Duncan, Hannah Ginberg, Sai Reddy, Lester Yang
 -----------
