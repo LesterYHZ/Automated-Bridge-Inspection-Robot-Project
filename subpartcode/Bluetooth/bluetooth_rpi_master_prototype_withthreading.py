@@ -17,6 +17,7 @@ def main():
     #main code
     processes = []
     #For path (every half a second)
+    global locs
     locs = ["A1","B2","D2","F2","F6","D6","B6","C4"]
     tstart = time.time()
     for loc in locs:

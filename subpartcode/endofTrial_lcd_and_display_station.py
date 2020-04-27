@@ -1,7 +1,5 @@
+#End of trial with threading
 #End state: combining LCD display and display station (bluetooth)
-
-#manager
-
 
 #LCD
 #At the end of 75 seconds, your vehicle should cease operation.
@@ -13,31 +11,30 @@
 #Flash washer locations in same sequence as LCD (only once)
 #The washer locations determined during trial
 
-#How to do two things at once?
+#Importing
+import Adafruit_CharLCD as LCD
+import time
+import bluetooth
+import threading
 
-def mainFn(): #This will all be in FSM main code
-    #For LCD
-    import Adafruit_CharLCD as LCD
-    import time
-    
-    #For bluetooth
-    import bluetooth
-    import time
-
+def main(): #This will all be in FSM main code
     #The washer locations determined during trial (at most four)
-    locs = ["A1","B1","C1","D1"]
+    global locs
+    locs = ["A1","B1","C1","D1"] #captured throughout trial, saved as global variable
 
     #Mac address of display station
+    global macAddress
     macAddress = "2015:10:195789"
 
-    #Call function to print LCD
-        #In function, call display station bluetooth function (in while loop)
-    printLCD()
+    #Threading
+    thread1 = threading.Thread(target = printLCD, args = [locs])
+    thread2 = threading.Thread(target = printBluetooth, args = [locs, macAddress])
+    thread1.start()
+    thread2.start()
 
-
-def printLCD(locs, macAddress): #sending in macAddress because printLocs called in while loop
+def printLCD(locs):
     #Declare pins
-    lcd_rs = 22 
+    lcd_rs = 22
     lcd_en = 17
     lcd_d4 = 25
     lcd_d5 = 24
@@ -50,15 +47,11 @@ def printLCD(locs, macAddress): #sending in macAddress because printLocs called 
     #Declare mylcd
     lcd =LCD.Adafruit_CharLCD (lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns, lcd_rows, lcd_backlight)
 
-    #Print display station on y-th run-through of LCD
-    #FIX THIS!!
-    y = 5;
-    
+    loop = 0 #count loops
+    print("Begin printing LCD")
     while True: #sequence continues until robot turns off; loop forever
-        count=0
-        if (count == y): #stop to print sequence onto display station
-            printLocs(locs,macAddress)
-            #Continue with LCD printing now
+        count = 0
+        loop = loop + 1
         for x in locs:
             count=count+1
             loc_of_Int = x
@@ -69,20 +62,21 @@ def printLCD(locs, macAddress): #sending in macAddress because printLocs called 
             lcd.set_cursor(0, 1)
             lcd.message(strLoc2)
             time.sleep(1) #each location displayed for 1 second
-            lcd.clear() #clear to print out next location    
-
+            lcd.clear() #clear to print out next location
 
 #Function to flash the same location sequence as your vehicle once the trial has concluded.
-def printLocs(locs,macAddress):
+def printBluetooth(locs,macAddress):
     #Only go through sequence once
+    print("Begin printing Bluetooth")
     for x in locs:
         loc_of_Int = x
         #Flash loc_of_Int on display station
         sendMessageTo(macAddress,loc_of_Int)
+        print("Loc " + loc_of_Int + " sent")
         #Display location for 1 second
         time.sleep(1)
         #Clear location
-        sendMessageTo(macAddress,'xx') 
+        sendMessageTo(macAddress,'xx')
 
 def sendMessageTo(targetBluetoothMacAddress,message):
   port = 1
@@ -90,6 +84,7 @@ def sendMessageTo(targetBluetoothMacAddress,message):
   sock.connect((targetBluetoothMacAddress, port))
   sock.send(message)
   sock.close()
-    
 
-    
+
+if __name__ == '__main__':
+    main()
