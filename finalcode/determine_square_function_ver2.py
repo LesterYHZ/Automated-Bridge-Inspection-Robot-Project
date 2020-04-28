@@ -26,7 +26,7 @@
     #determineLoc will be called every 0.5 seconds and square location will be sent to display station via bluetooth
         #will also be called if washer is found (these square locations will be remembered in order to print out on LCD at end)
 
-def mainFn (): #This will all be in FSM main code
+def main (): #This will all be in FSM main code
     #Importing
     import RPi.GPIO as GPIO
     import time
@@ -81,7 +81,7 @@ def determineLoc(movingforward,turningright,turningleft,rightIndex,leftIndex,was
             (rightIndex, leftIndex, sensor_N, sensor_W, sensor_S, sensor_E) = assignDirection(rightIndex, leftIndex, turningright, turningleft)
             #leftIndex set to match config of rightIndex
 
-        elif ((turningleft == 1)and (turningright == 0) and (movingforward == 0)):
+        elif ((turningleft == 1) and (turningright == 0) and (movingforward == 0)):
             leftIndex = leftIndex + 1
             #rightIndex does not change -> calling function
             (rightIndex, leftIndex, sensor_N, sensor_W, sensor_S, sensor_E) = assignDirection(rightIndex, leftIndex, turningright, turningleft)
@@ -98,20 +98,9 @@ def determineLoc(movingforward,turningright,turningleft,rightIndex,leftIndex,was
         else:
             print("ERROR!")
 
-    #Keep track of sensor1 direction for pushing mechanism
-    #Sensor 1 is same direction as pushing mechanism, always (this would change if original config was different)
-    if (sensor_N == 1):
-        sensorPatch = "N"
-    elif (sensor_W == 1):
-        sensorPatch = "W"
-    elif (sensor_S == 1):
-        sensorPatch = "S"
-    elif (sensor_E == 1):
-        sensorPatch = "E"
-    #Need to keep track of what direction (N,W,S,E) sensor 1 is in EACH TIME
-    #Only one (sensor_N, sensor_W, sensor_S, and sensor_E) should be equal to SENSOR 1
+`
 
-    (TRIG_N, TRIG_W, TRIG_S, TRIG_E, config_N, config_W, config_S, config_E) = declareSensor(sensor_N, sensor_W, sensor_S, sensor_E, TRIG_sensor1, ECHO_sensor1, TRIG_sensor2, ECHO_sensor2, TRIG_sensor3, ECHO_sensor3, TRIG_sensor4, ECHO_sensor4)
+    (TRIG_N, ECHO_N, TRIG_W, ECHO_W, TRIG_S, ECHO_S, TRIG_E, ECHO_E, config_N, config_W, config_S, config_E, sensor1, sensor2, sensor3, sensor4) = declareSensor(sensor_N, sensor_W, sensor_S, sensor_E, TRIG_sensor1, ECHO_sensor1, TRIG_sensor2, ECHO_sensor2, TRIG_sensor3, ECHO_sensor3, TRIG_sensor4, ECHO_sensor4)
 
     #Declare N,W,S,E TRIG & ECHO pins
     #Ultrasonic sensor - North
@@ -133,6 +122,57 @@ def determineLoc(movingforward,turningright,turningleft,rightIndex,leftIndex,was
     distance_S = readDistance(3) #determine south distance
     distance_E = readDistance(4) #determine east distance
 
+    #Assign directions back to sensor numbers
+
+    #First sensor 1
+    if (sensor1 == "N"): 
+        distance1_full = distance_N
+    elif (sensor1 == "W"):
+        distance1_full = distance_W
+    elif (sensor1 == "S"):
+        distance1_full = distance_S
+    elif (sensor1 == "E"):
+        distance1_full = distance_E
+    #Now sensor 2
+     if (sensor2 == "N"): 
+        distance2_full = distance_N
+    elif (sensor2 == "W"):
+        distance2_full = distance_W
+    elif (sensor2 == "S"):
+        distance2_full = distance_S
+    elif (sensor2 == "E"):
+        distance2_full = distance_E
+    #Now sensor 3
+    if (sensor3 == "N"): 
+        distance3_full = distance_N
+    elif (sensor3 == "W"):
+        distance3_full = distance_W
+    elif (sensor3 == "S"):
+        distance3_full = distance_S
+    elif (sensor3 == "E"):
+        distance3_full = distance_E
+    #Finally sensor 4
+    if (sensor4 == "N"): 
+        distance4_full = distance_N
+    elif (sensor4 == "W"):
+        distance4_full = distance_W
+    elif (sensor4 == "S"):
+        distance4_full = distance_S
+    elif (sensor4 == "E"):
+        distance4_full = distance_E
+    #Now distance1, distance2, distance3, distance4 are distances of all 4 sensors
+    #Subtract 0.5ft in all directions - 7x7 ft board
+    #Distance not a part of the board
+    leftoverDistance_all = 0.5
+    #Subtract leftoverDistance(s) from total distance
+    distance1 = distance1_full - leftoverDistance_all
+    distance2 = distance2_full - leftoverDistance_all
+    distance3 = distance3_full - leftoverDistance_all
+    distance4 = distance4_full - leftoverDistance_all
+    #Now all distances within 7x7 ft board
+    #Send back distance1, distance2, distance3, and distance4 continuously to function1
+
+
     #Assign length and width of car according to configuration
     (dim1, dim2) = assignLengthWidth(config_N, config_S, config_W, config_E, washerinFront):
 
@@ -146,7 +186,8 @@ def determineLoc(movingforward,turningright,turningleft,rightIndex,leftIndex,was
     #Will need to send this location to the display station VIA BLUETOOTH!
     print ("Square:",location)
 
-    return (location, rightIndex, leftIndex, sensor_N, sensor_W, sensor_S, sensor_E, distance_N, distance_W, distance_S, distance_E) #to mainFn (i.e. FSM code)
+   # return (location, rightIndex, leftIndex, sensor_N, sensor_W, sensor_S, sensor_E, distance_N, distance_W, distance_S, distance_E) #to mainFn (i.e. FSM code)
+     return (location, rightIndex, leftIndex, distance1, distance2, distance3, distance4) 
         #now, sends back distance (in feet) of all four sensor in all four directions (N, S, W, E)
 """
 """
@@ -159,77 +200,93 @@ def declareSensor(sensor_N, sensor_W, sensor_S, sensor_E, TRIG_sensor1, ECHO_sen
         TRIG_N = TRIG_sensor1
         ECHO_N = ECHO_sensor1
         config_N = 1 #dummy variable to track which direction of length/width
+        sensor1 = "N"
     elif (sensor_N == 2):
         TRIG_N = TRIG_sensor2
         ECHO_N = ECHO_sensor2
         config_N = 0
+        sensor2 = "N"
     elif (sensor_N == 3):
         TRIG_N = TRIG_sensor3
         ECHO_N = ECHO_sensor3
         config_N = 1
-    elif (sensor_N == 4):
+        sensor3 = "N"
+    elif (s == 4):
         TRIG_N = TRIG_sensor4
         ECHO_N = ECHO_sensor4
         config_N = 0
+        sensor4 = "N"
 
     #Second, declare West sensor
     if (sensor_W == 1):
         TRIG_W = TRIG_sensor1
         ECHO_W = ECHO_sensor1
         config_W = 0
+        sensor1 = "W"
     elif (sensor_W == 2):
         TRIG_W = TRIG_sensor2
         ECHO_W = ECHO_sensor2
         config_W = 1
+        sensor2 = "W"
     elif (sensor_W == 3):
         TRIG_W = TRIG_sensor3
         ECHO_W = ECHO_sensor3
         config_W = 0
+        sensor3 = "W"
     elif (sensor_W == 4):
         TRIG_W = TRIG_sensor4
         ECHO_W = ECHO_sensor4
         config_W = 1
+        sensor3 = "W"
 
     #Third, declare South sensor
     if (sensor_S == 1):
         TRIG_S = TRIG_sensor1
         ECHO_S = ECHO_sensor1
         config_S = 1
+        sensor1 = "S"
     elif (sensor_S == 2):
         TRIG_S = TRIG_sensor2
         ECHO_S = ECHO_sensor2
         config_S = 0
+        sensor2 = "S"
     elif (sensor_S == 3):
         TRIG_S = TRIG_sensor3
         ECHO_S = ECHO_sensor3
         config_S = 1
+        sensor3 = "S"
     elif (sensor_S == 4):
         TRIG_S = TRIG_sensor4
         ECHO_S = ECHO_sensor4
         config_S = 0
+        sensor4 = "S"
 
     #Fourth, declare East sensor
     if (sensor_E == 1):
         TRIG_E = TRIG_sensor1
         ECHO_E = ECHO_sensor1
         config_E = 0
+        sensor1 = "E"
     elif (sensor_E == 2):
         TRIG_E = TRIG_sensor2
         ECHO_E = ECHO_sensor2
         config_E = 1
+        sensor2 = "E"
     elif (sensor_E == 3):
         TRIG_E = TRIG_sensor3
         ECHO_E = ECHO_sensor3
         config_E = 0
+        sensor3 = "E"
     elif (sensor_E == 4):
         TRIG_E = TRIG_sensor4
         ECHO_E = ECHO_sensor4
         config_E = 1
+        sensor4 = "E"
 
-    return (TRIG_N, TRIG_W, TRIG_S, TRIG_E, config_N, config_W, config_S, config_E) #to determineLoc
+    return (TRIG_N, ECHO_N, TRIG_W, ECHO_W, TRIG_S, ECHO_S, TRIG_E, ECHO_E, config_N, config_W, config_S, config_E, sensor1, sensor2, sensor3, sensor4) #to determineLoc -- here!
 
-""""
-""""
+"""
+"""
 
 #Function to read from encoder, assign N,W,S,E sensors
 def assignDirection(rightIndex, leftIndex, turningright, turningleft):
@@ -341,8 +398,8 @@ def assignDirection(rightIndex, leftIndex, turningright, turningleft):
         #sensor_N, sensor_W, sensor_S, sensor_E are int values of 1, 2, 3, 4
     return (rightIndex, leftIndex, sensor_N, sensor_W, sensor_S, sensor_E) #determineLoc
 
-""""
-""""
+"""
+"""
 
 #Function to read distance from one ultrasonic sensor
 def readDistance(direction):
@@ -420,8 +477,8 @@ def assignLengthWidth(config_N, config_S, config_W, config_E):
 
     return(dim1, dim2) #to determineLoc
 
-""""
-""""
+"""
+"""
 
 #Function to determine the car's square location on 7x7 board
 #called every half a second to determine square location on board

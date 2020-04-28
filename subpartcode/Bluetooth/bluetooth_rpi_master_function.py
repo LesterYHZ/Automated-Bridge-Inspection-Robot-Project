@@ -25,7 +25,7 @@ def mainFn(): #This will all be in FSM main code
 
     #Complete all steps here to locate washer
     #Once at washer, sound buzzer for 500 ms (each time bridge damage is located)
-    washerFound(macAddress)
+    washerFoundSound(macAddress)
 
     #TRIAL IS OVER
     #Flash washer locations in same sequence as LCD
@@ -61,7 +61,7 @@ def startComLink(macAddress):
     sendMessageTo(macAddress,'X0')
 
 #Function to sound buzzer when washer is located
-def washerFound(macAddress):
+def washerFoundSound(macAddress):
 
     #Turn on buzzer
     sendMessageTo(macAddress,'X1')
