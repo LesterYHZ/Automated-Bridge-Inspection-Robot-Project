@@ -110,7 +110,7 @@ void driveStraight()
   }
 }
 
-#define WHEEL_DIAM    38.5f   // mm
+#define WHEEL_DIAM    50.0f   // mm
 #define TRACK_WIDTH   108.0f   // mm
 #define TICKS_PER_REV 1204.0f
 #define MM_PER_TICK (((WHEEL_DIAM*PI)/TICKS_PER_REV))
@@ -191,4 +191,3 @@ bool pid_service_next( void )
   }
   return false;
 }
-

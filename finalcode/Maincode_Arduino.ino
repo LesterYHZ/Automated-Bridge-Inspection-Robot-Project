@@ -5,10 +5,12 @@
 #define motorL2 5
 #define motorR1 6
 #define motorR2 7
-#define encoderL1 11
-#define encoderL2 12
-#define encoderR1 2
-#define encoderR2 3 
+
+// encoder pins
+char en_rApin = 2;
+char en_rBpin = 3;
+char en_lApin = 11;
+char en_lBpin = 12; 
 
 // variables
 byte incomingData = '0';
@@ -27,9 +29,13 @@ void Forward();
 void Backward();
 void Right();
 void Left();
+void encoder_count(int outputA,int outputB);
 
 // setup 
 void setup() {
+    // Controllers Reset
+    resetPID();
+    setup_encoder();
     // pinmode setup 
     for (int num = 4; num <=10; num++) {
         pinMode(num,OUTPUT);
@@ -46,6 +52,14 @@ void setup() {
 
 // main loop 
 void loop() {
+    // encoder count
+    Serial.print("Left: ");
+    encoder_count(en_lApin,en_lBpin)
+    Serial.println();
+    Serial.print("Right: ");
+    encoder_count(en_rApin,en_rBpin)
+    Serial.println();
+    
     Receive_Signal();
 }
 
@@ -120,12 +134,7 @@ void Stop() {
 
 void Forward() {
     // both motors move forward 
-    analogWrite(enA, Speed);
-    analogWrite(enB, Speed);
-    digitalWrite(motorL1, HIGH);
-    digitalWrite(motorL2, LOW);
-    digitalWrite(motorR1, HIGH);
-    digitalWrite(motorR2, LOW);
+    driveStraight();
 }
 
 void Backward() {
@@ -140,25 +149,15 @@ void Backward() {
 
 void Right() {
     // left motor moves forward and right motor stops
-    analogWrite(enA, Speed);
-    analogWrite(enB, Speed);
-    digitalWrite(motorL1, HIGH);
-    digitalWrite(motorL2, LOW);
-    digitalWrite(motorR1, LOW);
-    digitalWrite(motorR2, LOW);
+    pid_turn(90);
 }
 
 void Left() {
     // right motor stops and left motor moves backward 
-    analogWrite(enA, Speed);
-    analogWrite(enB, Speed);
-    digitalWrite(motorL1, LOW);
-    digitalWrite(motorL2, LOW);
-    digitalWrite(motorR1, HIGH);
-    digitalWrite(motorR2, LOW);
+    pid_turn(-90);
 }
 
-int encoder_count(int outputA,int outputB) {
+void encoder_count(int outputA,int outputB) {
     aState = digitalRead(outputA); // Reads the "current" state of the outputA
     // If the previous and the current state of the outputA are different, that means a Pulse has occured
     if (aState != aLastState){     
@@ -170,4 +169,6 @@ int encoder_count(int outputA,int outputB) {
         }
     } 
     aLastState = aState; // Updates the previous state of the outputA with the current state
+    Serial.print("Counter: ");
+    Serial.print(counter);
 }
