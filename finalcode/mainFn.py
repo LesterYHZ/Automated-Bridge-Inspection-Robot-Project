@@ -77,13 +77,13 @@ import serial
     # Camera Vision System outputs
     global panAngle
     global tiltAngle
-    global washer_detected
+    global washerFound
 
 
 if __name__ == '__main__':
     main()
 
-def main(sensor1, sensor2, sensor3, sensor4, panAngle,tiltAngle, STOP, TS, RD, washer_detected):
+def main(sensor1, sensor2, sensor3, sensor4, panAngle,tiltAngle, STOP, TS, RD, washerFound):
 
     #This is the main FSM function
     #  FSM ##########################################################
@@ -103,7 +103,7 @@ def main(sensor1, sensor2, sensor3, sensor4, panAngle,tiltAngle, STOP, TS, RD, w
     if TS == 1 and STOP ==0:
         # Process 1 and Process 2 are started (location tracker, bluetooth connection, buzzer)
         # Pan and tilt rotations start
-        if washer_detected == 0: # Washer Search (State) # Ultrasonic Sensor Navigation
+        if washerFound == 0: # Washer Search (State) # Ultrasonic Sensor Navigation
             patch = 0
             if sensor1 << 0.94: # reverse
                 case = 2
@@ -117,7 +117,7 @@ def main(sensor1, sensor2, sensor3, sensor4, panAngle,tiltAngle, STOP, TS, RD, w
                 case = 3
             else:  #drive straight fwd CW around square
                 case = 1
-        if washer_detected != 0: # servo and ultrasonic sensor navigation
+        if washerFound != 0: # servo and ultrasonic sensor navigation
             if panAngle != 90 and panAngle != -90 and pantilt != 45: # allows car to get 5 in from walls
                 if sensor1 << 0.42:  # don't hit wall, turn to servo
                     if panAngle >>0: # turn right
@@ -147,9 +147,19 @@ def main(sensor1, sensor2, sensor3, sensor4, panAngle,tiltAngle, STOP, TS, RD, w
         if TS == 0: # Shut down (state)
             # signals battery source to turn off and all communications to shut down
 
-
+    If case == 3:
+    	turningright = 1
+	turningleft = 0
+    If case == 4:
+    	turningright = 0
+	turningleft = 1
+    If case == 0 or case == 1"
+	turningright = 0
+	turningleft == 0
+	
     motor = case
     PM = patch
+
     return (motor, PM)
 
 def Initialization():  # Seriial communication to Arduino
