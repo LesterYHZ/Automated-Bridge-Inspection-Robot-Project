@@ -10,7 +10,7 @@ import imutils
 import numpy as np
 import cv2
 
-global washer_detected
+global washerFound
 class ObjCenter:
 	def __init__(self, blob_canny):  # The constructor
 		# load OpenCV's blob detector
@@ -66,7 +66,7 @@ class ObjCenter:
 			# extract x and y coordinates from detected blobs
 			# blob coordinates give the center of blob detected
 			# blobs are numbered from the closet y (base of camera) to the furthers (away from the camera)
-			washer_detected = (len(rects))
+			washerFound = (len(rects))
 			print('number of washers', number_blob) # print out number of blobs
 			pts_array = cv2.KeyPoint_convert(rects)  # creates an array of the x and y coordinates for center of blobs
 			pts = np.array(pts_array)  # converts to an array we can pull from
