@@ -83,7 +83,7 @@ import serial
 if __name__ == '__main__':
     main()
 
-def main(sensor1, sensor2, sensor3, sensor4, panAngle,tiltAngle, STOP, TS, RD, washerFound):
+def main(distance1, distance2, distance3, distance4, panAngle,tiltAngle, STOP, TS, RD, washerFound):
 
     #This is the main FSM function
     #  FSM ##########################################################
@@ -105,11 +105,11 @@ def main(sensor1, sensor2, sensor3, sensor4, panAngle,tiltAngle, STOP, TS, RD, w
         # Pan and tilt rotations start
         if washerFound == 0: # Washer Search (State) # Ultrasonic Sensor Navigation
             patch = 0
-            if sensor1 << 0.94: # reverse
+            if distance1 << 0.94: # reverse
                 case = 2
-            if sensor2 << 1.05: # ft Turn right too close to wall
+            if distance2 << 1.05: # ft Turn right too close to wall
                 case = 3
-            if sensor3 >= 0.94 and sensor2 >> sensor4: # turn left (going CCW)
+            if distance3 >= 0.94 and distance2 >> distance4: # turn left (going CCW)
                 case =4
             if sensor4 << 1.05: # turn left
                 case = 1
@@ -119,7 +119,7 @@ def main(sensor1, sensor2, sensor3, sensor4, panAngle,tiltAngle, STOP, TS, RD, w
                 case = 1
         if washerFound != 0: # servo and ultrasonic sensor navigation
             if panAngle != 90 and panAngle != -90 and pantilt != 45: # allows car to get 5 in from walls
-                if sensor1 << 0.42:  # don't hit wall, turn to servo
+                if distance1 << 0.42:  # don't hit wall, turn to servo
                     if panAngle >>0: # turn right
                         case = 3
                         patch = 0
