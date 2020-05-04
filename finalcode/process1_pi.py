@@ -44,11 +44,19 @@ def Process1(): #Process1
 	global ECHO_S
 	global TRIG_E
 	global ECHO_E
+	# motor control
+    	global motor
+    	# patching mechanism
+    	global PM
+    	# Camera Vision System outputs
+    	global panAngle
+    	global tiltAngle
+    	global washerFound
 
     #Set all values to 0 to start
     #MUST ONLY DO THIS AT BEGINNING
-    turningright = 0
-    turningleft = 0
+#     turningright = 0
+#     turningleft = 0
     rightIndex = 0
     leftIndex = 0
     #Set first configuration of car -- only do this at beginning!
@@ -80,7 +88,126 @@ def Process1(): #Process1
     #Ultrasonic sensor 4: starting off east
     TRIG_sensor4 = 20
     ECHO_sensor4 = 21
+    
+    # FSM
+      # motor control
+    global motor
+    # patching mechanism
+    global PM
+    # Camera Vision System outputs
+    global panAngle
+    global tiltAngle
+    global washerFound
 
+
+    def FSM(distance1, distance2, distance3, distance4, panAngle,tiltAngle, STOP, TS, RD, washerFound):
+
+    #This is the main FSM function
+    #  FSM ##########################################################
+    # inputs:
+    # panAngle = camera servo1 angle readings (output from servo pid
+    # tiltAngle = camera servo2 angle readings
+    # TS = timer switch that begins 75 sec timer
+    # RD = counter for the number of times entering row d
+    # sensor1 = Ultrasonic sensor distance reading (pi pin)
+
+    # outputs:
+    # (Motor state) case=1-4 (Stop, fwd, backward, turn right, turn left)
+    # (Patching Mechanism) Patch = 0 or 1 (patching or not patching)
+
+
+    # Begin Session (state) waterfalls into Vision Sweep (state)
+    	if TS == 1 and STOP ==0:
+        # Process 1 and Process 2 are started (location tracker, bluetooth connection, buzzer)
+        # Pan and tilt rotations start
+            if washerFound == 0: # Washer Search (State) # Ultrasonic Sensor Navigation
+          		patch = 0
+		    if distance1 << 0.94: # reverse
+			case = 2
+		    if distance2 << 1.05: # ft Turn right too close to wall
+			case = 3
+		    if distance3 >= 0.94 and distance2 >> distance4: # turn left (going CCW)
+			case =4
+		    if sensor4 << 1.05: # turn left
+			case = 1
+		    if RD == 3 : # turn right on to row D
+			case = 3
+		    else:  #drive straight fwd CW around square
+			case = 1
+	   if washerFound != 0: # servo and ultrasonic sensor navigation
+		    if panAngle != 90 and panAngle != -90 and pantilt != 45: # allows car to get 5 in from walls
+			if distance1 << 0.42:  # don't hit wall, turn to servo
+			    if panAngle >>0: # turn right
+				case = 3
+				patch = 0
+			    if panAngle >>0: # turn left
+				case = 4
+				patch = 0
+			else: # drive fwd until servos direct a turn or stop
+			    case = 1
+			    patch = 0
+		    if panAngle == 90:  # turn right
+			case = 3
+			patch = 0
+		    if panAngle == -90: # turn left
+			case = 4
+			patch = 0
+		    if tiltAngle =45 and panAngle >= -5 and panAngle <= 5: # stop motors and Deploy patch
+			case = 0
+			patch = 1
+
+	    if STOP !=0: # Stop motors and go to Pre-shut down (state)
+		case = 0
+		patch = 0
+		print('washer location', locs)  # print to LCD display
+		# STOP also signals Process 1 and 2
+		if TS == 0: # Shut down (state)
+		    # signals battery source to turn off and all communications to shut down
+
+	    If case == 3:
+		turningright = 1
+		turningleft = 0
+	    If case == 4:
+		turningright = 0
+		turningleft = 1
+	    If case == 0 or case == 1"
+		turningright = 0
+		turningleft == 0
+
+	    motor = case
+	    PM = patch
+
+	    return (motor, PM)
+
+   def Initialization():  # Seriial communication to Arduino
+	    ser = serial.Serial("/dev/ttyUSB0",9600)
+   def Send_Signal(signal):
+	    # signal: [Int] 
+	    signal = motor
+	    ser.write(bytes(signal))
+		 #      case 0:
+		 #    // Motor Stop
+		 #        Motor(0);
+		 #        break;
+		 #    case 1:
+		 #    // Motor Forward
+		 #        Motor(1);
+		 #        break;
+		 #    case 2:
+		 #    // Motor Backward
+		 #        Motor(2);
+		 #        break;
+		 #    case 3:
+		 #    // Motor Right
+		 #        Motor(3);
+		 #        break;
+		 #    case 4:
+		 #    // Motor Left
+		 #        Motor(4);
+		 #        break;
+		# PM = 0 don't patch (patch =0)
+		# PM = 1 Need to patch (patch =1))
+	
     ##Car turning!
     #Put this in motor code
     #Car turns right
