@@ -90,15 +90,6 @@ def Process1(): #Process1
     ECHO_sensor4 = 21
     
     # FSM
-      # motor control
-    global motor
-    # patching mechanism
-    global PM
-    # Camera Vision System outputs
-    global panAngle
-    global tiltAngle
-    global washerFound
-
 
     def FSM(distance1, distance2, distance3, distance4, panAngle,tiltAngle, STOP, TS, RD, washerFound):
 
