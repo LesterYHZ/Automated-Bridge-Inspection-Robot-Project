@@ -113,13 +113,13 @@ def Process1(): #Process1
         # Pan and tilt rotations start
             if washerFound == 0: # Washer Search (State) # Ultrasonic Sensor Navigation
           		patch = 0
-		    if distance1 << 0.94: # reverse
+		    if distance1 < 0.94: # reverse
 			case = 2
-		    if distance2 << 1.05: # ft Turn right too close to wall
+		    if distance2 < 1.05: # ft Turn right too close to wall
 			case = 3
 		    if distance3 >= 0.94 and distance2 >> distance4: # turn left (going CCW)
 			case =4
-		    if sensor4 << 1.05: # turn left
+		    if sensor4 < 1.05: # turn left too close to wall
 			case = 1
 		    if RD == 3 : # turn right on to row D
 			case = 3
@@ -127,11 +127,11 @@ def Process1(): #Process1
 			case = 1
 	   if washerFound != 0: # servo and ultrasonic sensor navigation
 		    if panAngle != 90 and panAngle != -90 and pantilt != 45: # allows car to get 5 in from walls
-			if distance1 << 0.42:  # don't hit wall, turn to servo
-			    if panAngle >>0: # turn right
+			if distance1 < 0.42:  # don't hit wall, turn to servo
+			    if panAngle > 0: # turn right
 				case = 3
 				patch = 0
-			    if panAngle >>0: # turn left
+			    if panAngle < 0: # turn left
 				case = 4
 				patch = 0
 			else: # drive fwd until servos direct a turn or stop
@@ -143,7 +143,7 @@ def Process1(): #Process1
 		    if panAngle == -90: # turn left
 			case = 4
 			patch = 0
-		    if tiltAngle =45 and panAngle >= -5 and panAngle <= 5: # stop motors and Deploy patch
+		    if tiltAngle == 45 and panAngle >= -5 and panAngle <= 5: # stop motors and Deploy patch
 			case = 0
 			patch = 1
 
