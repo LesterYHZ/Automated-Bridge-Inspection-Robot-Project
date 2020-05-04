@@ -1,5 +1,5 @@
 # goal of this code is to use OpenCV's Blob detector to detector the washers using an
-# edge detection filter (not color)
+# OpenCV's Canny edge detection filter (not color)
 # it needs the video frame as an input
 # outputs the x and y coordinate to the closest blob detected
 # the blob parameters are needed to limit the things that are detected as a "blob"
@@ -10,8 +10,9 @@ import imutils
 import numpy as np
 import cv2
 
+global washer_detected
 class ObjCenter:
-	def __init__(self, haarPath):  # The constructor
+	def __init__(self, blob_canny):  # The constructor
 		# load OpenCV's blob detector
 
 		# setting parameters for detector to detect certain blobs only
@@ -21,7 +22,7 @@ class ObjCenter:
 		params.minThreshold = 100
 		params.maxThreshold = 300
 
-		# Filter by Area.
+		# Filter by Area
 		params.filterByArea = True
 		params.minArea = 10
 		# params.maxArea = 5000
@@ -65,7 +66,7 @@ class ObjCenter:
 			# extract x and y coordinates from detected blobs
 			# blob coordinates give the center of blob detected
 			# blobs are numbered from the closet y (base of camera) to the furthers (away from the camera)
-			number_blob = (len(rects))
+			washer_detected = (len(rects))
 			print('number of washers', number_blob) # print out number of blobs
 			pts_array = cv2.KeyPoint_convert(rects)  # creates an array of the x and y coordinates for center of blobs
 			pts = np.array(pts_array)  # converts to an array we can pull from
@@ -74,9 +75,15 @@ class ObjCenter:
 			blobX = int(x)
 			blobY = int(y)
 
+
 			# return the center (x, y)-coordinates of the first/closet blob
-			return ((blobX, blobY), pts[0])
+			return ((blobX, blobY), pts[0], number_blob)
 
 		# otherwise no blobs were found, so return the center of the
-		# frame
-		return (frameCenter, None)
+		# frame + 90 and - 90
+		if len(rects) == 0:
+			while len(rects) == 0:
+				blobX = np.arange(0, (frameCenter + frameCenter/2), 10)
+				blobY = np.arange(0, (frameCenter + frameCenter/2), 10)
+				return ((blobX, blobY))
+		# return (frameCenter, None)

@@ -1,5 +1,5 @@
 # goal of this code is to create a PID controller used to update our servos positions with
-# outputs sum of KID
+# outputs sum of PID
 # takes error as an input
 # sleep can be adjusted to the specific needed for the electromechanical hardware being used
 # important to make sure PID is not updating faster than objects(and their coordinates
