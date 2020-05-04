@@ -25,7 +25,7 @@ import cv2
 
 global panAngle
 global tiltAngle
-global washer_detected
+global washerFound
 
 
 # define the range for the motors
@@ -73,7 +73,7 @@ def obj_center(args, objX, objY, centerX, centerY):  # first process
 		objectLoc = obj.update(frame, (centerX.value, centerY.value))
 		((objX.value, objY.value), rect) = objectLoc
 		# global variable for FSM
-		washer_detected = (len(rects))
+		washerFound = (len(rects))
 	
 		# draw keypoints on frame
 		# Draw detected blobs as red circles.
