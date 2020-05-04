@@ -6,6 +6,8 @@ import threading
 import bluetooth
 import time
 import Adafruit_CharLCD as LCD
+import serial
+
 
 ###Keep track of global variables we are using in our FSM
 
@@ -149,6 +151,13 @@ def main(sensor1, sensor2, sensor3, sensor4, panAngle,tiltAngle, STOP, TS, RD, w
     motor = case
     PM = patch
     return (motor, PM)
+
+def Initialization():  # Seriial communication to Arduino
+    ser = serial.Serial("/dev/ttyUSB0",9600)
+def Send_Signal(signal):
+    # signal: [Int] 
+    signal = motor
+    ser.write(bytes(signal))
          #      case 0:
          #    // Motor Stop
          #        Motor(0);
